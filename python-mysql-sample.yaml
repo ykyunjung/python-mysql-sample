@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-mysql-sample-deployment
+spec:
+  selector:
+    matchLabels:
+      app: python-mysql-sample
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: python-mysql-sample
+    spec:
+      containers:
+      - name: python-mysql-sample
+        image: iad.ocir.io/idzaf7d76gjx/demo-python-mysql-sample-data:1.0
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: ocirsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-mysql-sample-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: python-mysql-sample
